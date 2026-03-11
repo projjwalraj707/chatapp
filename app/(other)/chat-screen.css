@@ -1,0 +1,44 @@
+.cs-container {
+	display: flex;
+	flex-direction: row;
+	height: 90vh;
+}
+
+.cs-contacts-container {
+	flex: 2;
+}
+
+.cs-chats-container {
+	background-color: rgba(255, 251, 245, 0.991);
+	flex: 7;
+	border-radius: 15px;
+	margin: 10px;
+}
+
+.contact {
+	margin: 10px;
+	background-color: #57595B;
+	height: 70px;
+	border-radius: 15px;
+	padding: 10px 0px 0px 10px;
+	font-size: large;
+}
+
+.contact:first-child {
+	font-size: x-large;
+}
+
+.msgs {
+	display: flex;
+	justify-content: flex-end;
+	align-items: flex-end;
+	flex-direction: column;
+	height: 100%;
+}
+
+.msg {
+	background-color: #57595B;
+	border-radius: 10px;
+	padding: 5px 10px;
+	margin: 5px;
+}

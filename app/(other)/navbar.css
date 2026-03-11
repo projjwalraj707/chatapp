@@ -1,0 +1,19 @@
+.nb-container {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	background-color: #57595B;
+	font-size: x-large;
+	padding: 12px 15px;
+	border-bottom-left-radius: 15px;
+	border-radius: 15px;
+}
+
+.menu {
+	display: flex;
+	flex-direction: row;
+}
+
+.menu-item {
+	margin-left: 20px;
+}

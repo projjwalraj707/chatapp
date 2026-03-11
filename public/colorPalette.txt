@@ -1,0 +1,4 @@
+Darkest: 452829
+57595B
+E8D1C5
+lightest: F3E8DF
