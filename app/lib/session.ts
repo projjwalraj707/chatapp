@@ -2,15 +2,15 @@
 
 import jwt from "jsonwebtoken";
 import { cookies } from "next/headers";
-import client from "./pgsql";
 
 const SECRET_KEY = process.env.JWT_SECRET;
 
-export async function createSession(userID: string, name: string) {
+export async function createSession(username: string, name: string, email: string) {
 	const expiresAt = new Date(Date.now() + 7*24*60*60*1000); //expire a token in 7 days
 	const session = jwt.sign({
-		userID,
+		username,
 		name,
+		email,
 		expiresAt
 	},
 	SECRET_KEY,

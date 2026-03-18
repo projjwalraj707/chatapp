@@ -1,0 +1,32 @@
+* Stores info about each user
+Users (
+	id UUID primary key DEFAULT uuid_generate_v4(),
+	username text unique not null,
+	email text unique not null,
+	name text not null,
+	hashed_password text not null,
+	created_at timestamp not null default now()
+)
+
+* Stores info about each convo (group or personal)
+CREATE TABLE conversations (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    created_at TIMESTAMP DEFAULT NOW(),
+	convo_name TEXT
+);
+
+* Links each converstion with its members
+CREATE TABLE conversation_members (
+    conversation_id UUID REFERENCES conversations(id) ON DELETE CASCADE,
+    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+    PRIMARY KEY (conversation_id, user_id)
+);
+
+* Links each message to the chat (group or personal) and a sender
+CREATE TABLE messages (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    conversation_id UUID REFERENCES conversations(id) ON DELETE CASCADE,
+    sender_id UUID REFERENCES users(id),
+    content TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT NOW()
+);

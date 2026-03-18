@@ -1,6 +1,6 @@
 'use server';
 import { z } from 'zod';
-import client from '../../lib/pgsql';
+import client from '../../lib/db/pgsql';
 import { createSession } from '../../lib/session';
 import { redirect } from 'next/navigation';
 

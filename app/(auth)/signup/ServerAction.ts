@@ -2,7 +2,7 @@
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { createSession } from "../../lib/session";
-import client from "../../lib/pgsql";
+import client from "../../lib/db/pgsql";
 
 const FormDataSchema = z.object({
 	name: z.string().trim()
@@ -45,7 +45,7 @@ export default async function submitForm (previousState: unknown, formData: Form
 	}
 	try {
 		const query = {
-			text: 'INSERT INTO users (username, name, email, hashed_password) values ($1, $2, $3, $4)',
+			text: 'INSERT INTO users (username, name, email, hashed_password) VALUES ($1, $2, $3, $4)',
 			values: [parsedData.data.username, parsedData.data.name, parsedData.data.email, parsedData.data.password],
 		}
 		await client.query(query);
@@ -56,6 +56,6 @@ export default async function submitForm (previousState: unknown, formData: Form
 			formData: Object.fromEntries(formData.entries()),
 		}
 	}
-	await createSession(parsedData.data.username, parsedData.data.name);
+	await createSession(parsedData.data.username, parsedData.data.name, parsedData.data.email);
 	redirect("/")
 }

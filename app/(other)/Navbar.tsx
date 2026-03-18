@@ -1,8 +1,7 @@
 "use server"
 import { redirect } from 'next/navigation'
-import { deleteSession, extractPayLoad, getName } from '../lib/session';
+import { deleteSession, extractPayLoad } from '../lib/session';
 import './navbar.css';
-
 
 export default async function Navbar() {
 	async function logout() {
@@ -19,7 +18,7 @@ export default async function Navbar() {
 				<ul className="menu" >
 					<li id='menu-item1' className='menu-item'>{(await extractPayLoad()).name}</li>
 					<form action={logout}>
-						<button className='menu-item button-abled' >Logout</button>
+						<button className='menu-item button-abled' style={{color: 'inherit'}}>Logout</button>
 					</form>
 				</ul>
 			</div>
