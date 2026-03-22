@@ -43,12 +43,18 @@ export default async function submitForm (previousState: unknown, formData: Form
 			formData: Object.fromEntries(formData.entries()),
 		}
 	}
+	let user_id: string = "";
 	try {
 		const query = {
-			text: 'INSERT INTO users (username, name, email, hashed_password) VALUES ($1, $2, $3, $4)',
+			text: 'INSERT INTO users (username, name, email, hashed_password)\
+			VALUES ($1, $2, $3, $4)\
+			RETURNING *',
 			values: [parsedData.data.username, parsedData.data.name, parsedData.data.email, parsedData.data.password],
 		}
-		await client.query(query);
+		const res = await client.query(query);
+		user_id = res.rows[0].id;
+		console.log("singup result:")
+		console.log(res)
 	}
 	catch {
 		return {
@@ -56,6 +62,6 @@ export default async function submitForm (previousState: unknown, formData: Form
 			formData: Object.fromEntries(formData.entries()),
 		}
 	}
-	await createSession(parsedData.data.username, parsedData.data.name, parsedData.data.email);
+	await createSession(parsedData.data.username, user_id, parsedData.data.name, parsedData.data.email);
 	redirect("/")
 }

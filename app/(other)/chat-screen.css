@@ -10,17 +10,31 @@
 
 .cs-chats-container {
 	flex: 7;
-	border-radius: 15px;
-	margin: 10px;
+	margin: 5px;
 }
 
 .cs-chats-container-inner {
 	background-color: rgba(255, 251, 245, 0.991);
-	border-color: #57595B;
-	border-width: 3px;
+	/* border-color: #57595B; */
+	/* border-width: 3px; */
 	border-radius: 5px;
 	height: 100%;
-	margin-bottom: 30px;
+	margin-bottom: 20px;
+	display: flex;
+	flex-direction: column;
+	/* align-items: end; */
+}
+
+.self-msg {
+	align-self: flex-end;
+}
+
+.other-msg {
+	align-self: flex-start;
+}
+
+.msg-author {
+	font-size: small;
 }
 
 .contact {
@@ -38,19 +52,22 @@
 	justify-content: space-between;
 }
 
-.msgs {
+/* .msgs {
 	display: flex;
 	justify-content: flex-end;
 	align-items: flex-end;
 	flex-direction: column;
 	height: 100%;
-}
+} */
 
 .msg {
 	background-color: #57595B;
 	border-radius: 10px;
-	padding: 5px 10px;
-	margin: 5px;
+	padding: 5px 10px 10px 10px;
+}
+
+.msg-container {
+	margin: 10px 10px;
 }
 
 img:hover {
@@ -99,10 +116,36 @@ button {
 }
 
 .msg-input-form {
-	background-color: black;
+	display: flex;
+	justify-content: space-between;
 }
 
 .msg-input {
 	background-color: rgba(255, 251, 245, 0.991);
-	width: 100%;
+	border-radius: 100px;
+	border-color: #57595B;
+	border-width: 3px;
+	width: 95%;
+	font-weight: bold;
+	color: black;
+	height: 50px;
+	padding: 20px;
+}
+
+.send-button {
+	margin: auto;
+	width: 35px;
+	height: 35px;
+	margin-top: 7px;
+}
+
+.chat-alt {
+	color: #57595B;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 100%;
+	background-color: rgba(255, 251, 245, 0.991);
+	border-radius: 5px;
+	font-size: larger;
 }

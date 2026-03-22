@@ -3,19 +3,31 @@ import Link from 'next/link';
 import Chats from './Chats';
 import './chat-screen.css'
 import { useEffect, useState } from 'react';
-import { getConversations } from '../lib/db/dbQueries';
+import { getConversations, usernameToName } from '../lib/db/dbQueries';
+import { findCurrUser } from '../lib/session';
+
+type userType = {
+	username: string,
+	name: string,
+	user_id: string,
+}
+
+type conversationType = {
+	conversation_id: string,
+	convo_name: string,
+	users: userType[]
+}
 
 export default function ChatScreen() {
-	const [conversations, setConversations] = useState<{convo_name: string, users: string[]}[]>([]);
-	const [currConvo, setCurrConvo] = useState("");
-	const [currMembers, setCurrMembers] = useState([]);
+	const [conversations, setConversations] = useState<conversationType[]>([]);
+	const [currConvo, setCurrConvo] = useState<conversationType | null>(null);
+	const [currUser, setCurrUser] = useState<userType | null>(null)
+
 	useEffect(() => {
 		getConversations().then(res => setConversations(res));
+		findCurrUser().then(res => setCurrUser(res));
 	}, [])
-	function selectConvo(e) {
-		setCurrConvo(e.target.id)
-		setCurrMembers(conversations.find(ele => ele.convo_name == e.target.id)?.users)
-	}
+
 	return (
 		<div className="cs-container">
 			<div className="cs-contacts-container">
@@ -27,12 +39,22 @@ export default function ChatScreen() {
 						</Link>
 					</li>
 					{conversations.map(conversation =>
-						<li onClick={selectConvo} id={conversation.convo_name} className='contact'> {conversation.convo_name} </li>
+						<li onClick={() => setCurrConvo(conversation)} className='contact'>
+							{
+								conversation.users.length > 2 ? 
+								conversation.convo_name
+								: conversation.users.find(user => user.username != currUser?.username)?.name
+							}
+						</li>
 					)}
 				</ul>
 			</div>
 			<div className="cs-chats-container">
-				<Chats currConvo={currConvo} currMembers = {currMembers} />
+				{
+					currConvo ? 
+					<Chats currConvo={currConvo} currUser = {currUser} />
+					: <div className='chat-alt'> Select a chat to start conversation</div>
+				}
 			</div>
 		</div>
 	)

@@ -5,10 +5,11 @@ import { cookies } from "next/headers";
 
 const SECRET_KEY = process.env.JWT_SECRET;
 
-export async function createSession(username: string, name: string, email: string) {
+export async function createSession(username: string, user_id: string, name: string, email: string) {
 	const expiresAt = new Date(Date.now() + 7*24*60*60*1000); //expire a token in 7 days
 	const session = jwt.sign({
 		username,
+		user_id,
 		name,
 		email,
 		expiresAt
@@ -32,6 +33,15 @@ export async function extractPayLoad() {
 	}
 	catch (err) {
 		console.log("Failed to verify token!", err);
+	}
+}
+
+export async function findCurrUser() {
+	const payLoad = await extractPayLoad();
+	return {
+		username: payLoad.username,
+		name: payLoad.name,
+		user_id: payLoad.user_id,
 	}
 }
 

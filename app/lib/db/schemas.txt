@@ -25,8 +25,8 @@ CREATE TABLE conversation_members (
 * Links each message to the chat (group or personal) and a sender
 CREATE TABLE messages (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    created_at TIMESTAMP DEFAULT NOW(),
     conversation_id UUID REFERENCES conversations(id) ON DELETE CASCADE,
-    sender_id UUID REFERENCES users(id),
-    content TEXT NOT NULL,
-    created_at TIMESTAMP DEFAULT NOW()
+    author UUID REFERENCES users(id),
+    content TEXT NOT NULL
 );

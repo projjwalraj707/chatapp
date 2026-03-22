@@ -43,7 +43,7 @@ export default function Signup() {
 					</label>
 
 					<div className='divider'></div>
-					{state?.errors.generalError && (<span className='text-red-500 bold'>: {state.errors.generalError[0]}</span>)}
+					{state?.errors.generalError && (<span className='text-red-500 bold'>{state.errors.generalError[0]}</span>)}
 					<div className='button-container'>
 						<button className={`submit-button ${isPending ? "button-disabled" : "button-abled"}`} type='submit' disabled={isPending}>
 							{isPending ? "Submitting..." : "Submit"}

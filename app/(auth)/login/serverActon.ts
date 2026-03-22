@@ -22,7 +22,6 @@ export default async function submitForm(previousState: unknown, formData: FormD
 		}
 	}
 	const res = await client.query('select * from users where username = $1', [parsedData.data.username]);
-	console.log(res.rows);
 	if (res.rows.length == 0) return {
 		errors: { username: ["doesn't exist"] },
 		formData: Object.fromEntries(formData.entries()),
@@ -31,6 +30,6 @@ export default async function submitForm(previousState: unknown, formData: FormD
 		errors: { username: ["wrong entry"], password: ["wrong entry"]},
 		formData: Object.fromEntries(formData.entries()),
 	}
-	await createSession(parsedData.data.username, res.rows[0].name);
+	await createSession(parsedData.data.username, res.rows[0].id, res.rows[0].name, res.rows[0].email);
 	redirect("/")
 }

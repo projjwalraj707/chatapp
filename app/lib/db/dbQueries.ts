@@ -49,20 +49,20 @@ export async function createGroup(friends: string[], chatName: string) {
 }
 
 export async function getConversations() {
-	const currentUserID = await usernameToUserID((await extractPayLoad()).username);
+	const currentUserID = (await extractPayLoad()).user_id;
 	const query = {
 		text: "\
 		WITH myConversations (conversation_id, convo_name)\
 		AS (\
 			SELECT c.id, c.convo_name\
 			FROM conversations as c\
-			LEFT JOIN conversation_members as cm\
+			INNER JOIN conversation_members as cm\
 				ON c.id = cm.conversation_id\
 			WHERE cm.user_id = $1\
 		)\
-		SELECT mC.convo_name as convo_name, u.username as username\
+		SELECT mC.convo_name as convo_name, mC.conversation_id as conversation_id, u.username as username, u.name as name, u.id as user_id\
 		FROM myConversations as mC\
-		RIGHT JOIN conversation_members as cm\
+		INNER JOIN conversation_members as cm\
 			ON mC.conversation_id = cm.conversation_id\
 		INNER JOIN users as u\
 			ON cm.user_id = u.id\
@@ -70,15 +70,49 @@ export async function getConversations() {
 		values: [currentUserID],
 	}
 	const res = await client.query(query);
-	const grouped: {convo_name: string, users: string[]} = res.rows.reduce((acc: Record<string, string[]>, { convo_name, username }: {convo_name: string, username: string}) => {
-		if (!acc[convo_name]) acc[convo_name] = [];
-		acc[convo_name].push(username);
+	const grouped = res.rows.reduce((acc, { conversation_id, convo_name, username, name, user_id }) => {
+		if (!acc[conversation_id]) {
+			acc[conversation_id] = {
+				conversation_id,
+				convo_name,
+				users: []
+			}
+		}
+		acc[conversation_id].users.push({username, name, user_id});
 		return acc;
-	}, {} as Record<string, string[]>);
-
-	const ans: {convo_name: string, users: string[]} = Object.entries(grouped).map(([convo_name, users]) => ({
-		convo_name,
-		users
-	}))
+	}, {} as Record<string, {conversation_id: string, convo_name: string, users: {username: string, name: string, user_id: string}[]}>);
+	const ans = Object.values(grouped);
 	return ans;
+}
+
+export async function saveMsgToDB(draft: string, conversation_id: string) {
+	const authorId = (await extractPayLoad()).user_id;
+	const  query = {
+		text: "\
+		INSERT INTO messages (conversation_id, author, content)\
+		VALUES ($1, $2, $3)\
+		",
+		values: [conversation_id, authorId, draft]
+	}
+	await client.query(query);
+}
+
+export async function fetchMessages(conversation_id: string) {
+	const query = {
+		text: "\
+		SELECT u.name as author, m.content, u.username as authorUsername\
+		FROM\
+			messages as m\
+			INNER JOIN conversations as c\
+				ON c.id = m.conversation_id\
+			INNER JOIN users as u\
+				ON m.author = u.id\
+		WHERE m.conversation_id = $1\
+		ORDER BY m.created_at\
+		",
+		values: [conversation_id]
+	}
+	const res = await client.query(query)
+	console.log(res)
+	return res.rows;
 }
