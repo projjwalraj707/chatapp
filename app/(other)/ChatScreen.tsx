@@ -38,8 +38,12 @@ export default function ChatScreen() {
 							<img src='/new-chat.png' width='55px' height='60px' alt='create new chat' />
 						</Link>
 					</li>
-					{conversations.map(conversation =>
+					{conversations.sort((a, b) => {
+						if (a.users.find(user => user.username === "myai") !== undefined) return -1;
+						return 1;
+					}).map(conversation =>
 						<li onClick={() => setCurrConvo(conversation)} className='contact'>
+							<img src={conversation.users.find(user => user.username == "myai") == null ? "blank-dp.png" : "myai.png"}></img>
 							{
 								conversation.users.length > 2 ? 
 								conversation.convo_name
@@ -52,7 +56,7 @@ export default function ChatScreen() {
 			<div className="cs-chats-container">
 				{
 					currConvo ? 
-					<Chats currConvo={currConvo} currUser = {currUser} />
+					<Chats currConvo={currConvo} currUser = {currUser} isAI={currConvo.users.find(user => user.username === "myai") !== undefined} />
 					: <div className='chat-alt'> Select a chat to start conversation</div>
 				}
 			</div>

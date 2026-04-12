@@ -1,4 +1,7 @@
 import pg from "pg";
+import dotenv from "dotenv";
+dotenv.config();
+
 const { Pool } = pg;
 
 const pool_context = {
@@ -17,7 +20,7 @@ pool.on('error', (err, client) => {
 });
 
 pool.on("connect", () => {
-	console.log("Database connected to the app.")
+	console.error("Database connected to the app.")
 })
 
 const client = await pool.connect();

@@ -1,7 +1,7 @@
 .cs-container {
 	display: flex;
 	flex-direction: row;
-	height: 85vh;
+	height: 83vh;
 }
 
 .cs-contacts-container {
@@ -22,15 +22,18 @@
 	margin-bottom: 20px;
 	display: flex;
 	flex-direction: column;
+	overflow-y: auto;
 	/* align-items: end; */
 }
 
 .self-msg {
 	align-self: flex-end;
+	padding: 0px 0px 0px 100px;
 }
 
 .other-msg {
 	align-self: flex-start;
+	padding: 0px 100px 0px 0px;
 }
 
 .msg-author {
@@ -42,8 +45,9 @@
 	background-color: #57595B;
 	height: 70px;
 	border-radius: 15px;
-	padding: 10px 10px 0px 10px;
+	padding: 10px 10px 0px 5px;
 	font-size: large;
+	display: flex;
 }
 
 .contact:first-child {

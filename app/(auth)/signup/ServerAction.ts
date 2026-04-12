@@ -53,8 +53,6 @@ export default async function submitForm (previousState: unknown, formData: Form
 		}
 		const res = await client.query(query);
 		user_id = res.rows[0].id;
-		console.log("singup result:")
-		console.log(res)
 	}
 	catch {
 		return {

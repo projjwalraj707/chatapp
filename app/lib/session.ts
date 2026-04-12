@@ -3,7 +3,7 @@
 import jwt from "jsonwebtoken";
 import { cookies } from "next/headers";
 
-const SECRET_KEY = process.env.JWT_SECRET;
+const SECRET_KEY = process.env.JWT_SECRET_KEY;
 
 export async function createSession(username: string, user_id: string, name: string, email: string) {
 	const expiresAt = new Date(Date.now() + 7*24*60*60*1000); //expire a token in 7 days
@@ -32,7 +32,7 @@ export async function extractPayLoad() {
 		return payload;
 	}
 	catch (err) {
-		console.log("Failed to verify token!", err);
+		console.error("Failed to verify token!", err);
 	}
 }
 
@@ -50,6 +50,6 @@ export async function deleteSession() {
 }
 
 export async function getName() {
-	console.log((await cookies()).get("session")?.value);
+	console.error((await cookies()).get("session")?.value);
 	//return (await cookies()).name;
 }

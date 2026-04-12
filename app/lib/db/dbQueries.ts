@@ -97,6 +97,18 @@ export async function saveMsgToDB(draft: string, conversation_id: string) {
 	await client.query(query);
 }
 
+export async function saveAIMsgToDB(draft: string, conversation_id: string) {
+	const aiID = await usernameToUserID("myai");
+	const query = {
+		text: "\
+		INSERT INTO messages (conversation_id, author, content)\
+		VALUES ($1, $2, $3)\
+		",
+		values: [conversation_id, aiID, draft]
+	}
+	await client.query(query);
+}
+
 export async function fetchMessages(conversation_id: string) {
 	const query = {
 		text: "\
@@ -113,6 +125,38 @@ export async function fetchMessages(conversation_id: string) {
 		values: [conversation_id]
 	}
 	const res = await client.query(query)
-	console.log(res)
 	return res.rows;
+}
+
+export async function findRecMsgs(username: string, duration: number) {
+	const query = {
+		text: "\
+		WITH myConvo (conversation_id, convo_name)\
+		AS (\
+			SELECT c.id, c.convo_name\
+			FROM conversations as c\
+			INNER JOIN conversation_members as cm\
+				ON c.id = cm.conversation_id\
+			INNER JOIN users as u\
+				ON u.id = cm.user_id\
+			WHERE u.username = $1\
+				AND c.id NOT IN (\
+					SELECT conversation_id\
+					FROM conversation_members\
+					INNER JOIN users\
+						ON users.id = conversation_members.user_id\
+					WHERE users.username = 'myai'\
+				)\
+		)\
+		SELECT m.content as msg, mC.convo_name, u.username as msg_author_username, u.name msg_author_name\
+		FROM messages as m\
+		INNER JOIN myConvo as mC\
+			ON mC.conversation_id = m.conversation_id\
+		INNER JOIN users as u\
+			ON u.id = m.author\
+		WHERE m.created_at >= NOW() - ($2 * INTERVAL '1 hour')\
+		",
+		values: [username, duration]
+	}
+	return (await client.query(query)).rows;
 }
