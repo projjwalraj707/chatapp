@@ -27,8 +27,8 @@ export default function ChatScreen() {
 	const [currUser, setCurrUser] = useState<userType | null>(null)
 
 	useEffect(() => {
-		getConversations().then(res => setConversations(res));
-		findCurrUser().then(res => setCurrUser(res));
+		getConversations().then(res => setConversations(res as any));
+		findCurrUser().then(res => setCurrUser(res as any));
 
 		socket = io();
 		return () => {
