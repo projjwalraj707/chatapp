@@ -31,7 +31,8 @@ export async function usernameToName(username: string) {
 }
 
 export async function createGroup(friends: string[], chatName: string) {
-	const groupAdmin = (await extractPayLoad()).username;
+	const payLoad = await extractPayLoad();
+	const groupAdmin = payLoad?.username;
 	const query = {
 		text: "INSERT INTO conversations(convo_name) VALUES($1) RETURNING *",
 		values: [friends.length > 1 ? chatName : "Private Chat"]
@@ -78,28 +79,28 @@ export async function getConversations() {
 				users: []
 			}
 		}
-		acc[conversation_id].users.push({username, name, user_id});
+		acc[conversation_id].users.push({ username, name, user_id });
 		return acc;
-	}, {} as Record<string, {conversation_id: string, convo_name: string, users: {username: string, name: string, user_id: string}[]}>);
+	}, {} as Record<string, { conversation_id: string, convo_name: string, users: { username: string, name: string, user_id: string }[] }>);
 	const ans = Object.values(grouped);
 	return ans;
 }
 
 export async function saveMsgToDB(draft: string, conversation_id: string) {
 	const payLoad = await extractPayLoad();
-	const authorId = payLoad.user_id;
+	const authorId = payLoad?.user_id;
 
 	// Emit the message via socket before saving to DB
 	if ((global as any).io) {
 		(global as any).io.to(conversation_id).emit("receive_message", {
 			room: conversation_id,
 			content: draft,
-			author: payLoad.name,
-			authorusername: payLoad.username
+			author: payLoad?.name,
+			authorusername: payLoad?.username
 		});
 	}
 
-	const  query = {
+	const query = {
 		text: "\
 		INSERT INTO messages (conversation_id, author, content)\
 		VALUES ($1, $2, $3)\

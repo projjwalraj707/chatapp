@@ -9,6 +9,8 @@ export default async function Navbar() {
 		await deleteSession();
 		redirect("/login")
 	}
+	const payload = await extractPayLoad();
+
 	return (
 		<div className="nb-container bold">
 			<div className="nb-left">
@@ -16,7 +18,7 @@ export default async function Navbar() {
 			</div>
 			<div className="nb-right">
 				<ul className="menu" >
-					<li id='menu-item1' className='menu-item'>{(await extractPayLoad()).name}</li>
+					<li id='menu-item1' className='menu-item'>{payload?.name}</li>
 					<form action={logout}>
 						<button className='menu-item button-abled' style={{color: 'inherit'}}>Logout</button>
 					</form>
