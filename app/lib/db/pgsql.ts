@@ -4,13 +4,18 @@ dotenv.config();
 
 const { Pool } = pg;
 
-const pool_context = {
-	user: process.env.DB_USERNAME,
-	host: process.env.DB_HOST,
-	password: process.env.DB_PASSWORD,
-	port: process.env.DB_PORT,
-	database: process.env.DB_NAME,
-}
+const pool_context = process.env.DATABASE_URL
+	? {
+		connectionString: process.env.DATABASE_URL,
+		ssl: { rejectUnauthorized: false }
+	}
+	: {
+		user: process.env.DB_USERNAME,
+		host: process.env.DB_HOST,
+		password: process.env.DB_PASSWORD,
+		port: parseInt(process.env.DB_PORT || "5432"),
+		database: process.env.DB_NAME,
+	};
 
 const pool = new Pool(pool_context);
 
