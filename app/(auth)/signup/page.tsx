@@ -14,32 +14,32 @@ export default function Signup() {
 				<form action={actionFunc}>
 					<label>Name
 						{state?.errors.name && (<span className='text-red-500 bold'>: {state.errors.name[0]}</span>)}
-						<br/>
-						<input name='name' type='text' defaultValue={state?.formData.name} placeholder='Enter your Full Name'/> <br/>
+						<br />
+						<input name='name' type='text' defaultValue={state?.formData.name as string} placeholder='Enter your Full Name' /> <br />
 					</label>
 
-					<label>Email 
+					<label>Email
 						{state?.errors.email && (<span className='text-red-500 bold'>: {state.errors.email[0]}</span>)}
-						<br/>
-						<input name='email' type='email' defaultValue={state?.formData.email} placeholder='Enter your Email'/> <br/>
+						<br />
+						<input name='email' type='email' defaultValue={state?.formData.email as string} placeholder='Enter your Email' /> <br />
 					</label>
 
-					<label>Username 
+					<label>Username
 						{state?.errors.username && (<span className='text-red-500 bold'>: {state.errors.username[0]}</span>)}
-						<br/>
-						<input name='username' type='text' defaultValue={state?.formData.username} placeholder='Enter your Username'/> <br/>
+						<br />
+						<input name='username' type='text' defaultValue={state?.formData.username as string} placeholder='Enter your Username' /> <br />
 					</label>
 
-					<label>Password 
+					<label>Password
 						{state?.errors.password && (<span className='text-red-500 bold'>: {state.errors.password[0]}</span>)}
-						<br/>
-						<input name='password' type='password' defaultValue={state?.formData.password} placeholder='Enter Your Password'/> <br/>
+						<br />
+						<input name='password' type='password' defaultValue={state?.formData.password as string} placeholder='Enter Your Password' /> <br />
 					</label>
 
-					<label>Confirm Password 
+					<label>Confirm Password
 						{state?.errors.confirmPassword && (<span className='text-red-500 bold'>: {state.errors.confirmPassword[0]}</span>)}
-						<br/>
-						<input name='confirmPassword' type='password' defaultValue={state?.formData.confirmPassword} placeholder='Confirm your Password'/> <br/>
+						<br />
+						<input name='confirmPassword' type='password' defaultValue={state?.formData.confirmPassword as string} placeholder='Confirm your Password' /> <br />
 					</label>
 
 					<div className='divider'></div>

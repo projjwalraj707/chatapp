@@ -16,13 +16,13 @@ export default function Login() {
 					<label>Username
 						{state?.errors.username && (<span className='text-red-500 bold'>: {state?.errors.username[0]}</span>)}
 						<br/>
-						<input type='text' name='username' defaultValue={state?.formData.username} placeholder='Enter your username'/> <br/>
+						<input type='text' name='username' defaultValue={state?.formData.username as string} placeholder='Enter your username'/> <br/>
 					</label>
 
 					<label>Password
 						{state?.errors.password && (<span className='text-red-500 bold'>: {state?.errors.password[0]}</span>)}
 						<br/>
-						<input type='password' name='password' defaultValue={state?.formData.password} placeholder='Enter Your password'/> <br/>
+						<input type='password' name='password' defaultValue={state?.formData.password as string} placeholder='Enter Your password'/> <br/>
 					</label>
 
 					<div className='divider'></div>
