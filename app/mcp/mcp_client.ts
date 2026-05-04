@@ -3,7 +3,7 @@ import { ChatOllama } from "@langchain/ollama";
 import { createAgent } from "langchain";
 
 const llm = new ChatOllama({
-	model: "mistral:latest"
+	model: "qwen2:latest"
 })
 
 const client = new MultiServerMCPClient({
@@ -21,7 +21,7 @@ try {
 		model: llm,
 		tools,
 	});
-	console.log("AI Agent created successfully 707 with tools:");
+	console.log("AI Agent created successfully 707 with tools:", tools);
 } catch (error) {
 	console.error("Error fetching tools from MCP server:", error);
 }

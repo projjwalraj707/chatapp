@@ -5,6 +5,9 @@ import './chat-screen.css'
 import { useEffect, useState } from 'react';
 import { getConversations, usernameToName } from '../lib/db/dbQueries';
 import { findCurrUser } from '../lib/session';
+import { io, Socket } from 'socket.io-client';
+
+let socket: Socket;
 
 type userType = {
 	username: string,
@@ -26,14 +29,30 @@ export default function ChatScreen() {
 	useEffect(() => {
 		getConversations().then(res => setConversations(res));
 		findCurrUser().then(res => setCurrUser(res));
+
+		socket = io();
+		return () => {
+			if (socket) socket.disconnect();
+		}
 	}, [])
+
+	useEffect(() => {
+		if (currConvo && socket) {
+			socket.emit("join_room", currUser?.username, currConvo.conversation_id);
+		}
+		return () => {
+			if (currConvo && socket && currUser) {
+				socket.emit("leave_room", currUser.username, currConvo.conversation_id);
+			}
+		}
+	}, [currConvo])
 
 	return (
 		<div className="cs-container">
 			<div className="cs-contacts-container">
 				<ul className='contact-list'>
 					<li className='contact'>
-						My Conversations 
+						My Conversations
 						<Link href='/new-chat'>
 							<img src='/new-chat.png' width='55px' height='60px' alt='create new chat' />
 						</Link>
@@ -45,9 +64,9 @@ export default function ChatScreen() {
 						<li onClick={() => setCurrConvo(conversation)} className='contact'>
 							<img src={conversation.users.find(user => user.username == "myai") == null ? "blank-dp.png" : "myai.png"}></img>
 							{
-								conversation.users.length > 2 ? 
-								conversation.convo_name
-								: conversation.users.find(user => user.username != currUser?.username)?.name
+								conversation.users.length > 2 ?
+									conversation.convo_name
+									: conversation.users.find(user => user.username != currUser?.username)?.name
 							}
 						</li>
 					)}
@@ -55,9 +74,9 @@ export default function ChatScreen() {
 			</div>
 			<div className="cs-chats-container">
 				{
-					currConvo ? 
-					<Chats currConvo={currConvo} currUser = {currUser} isAI={currConvo.users.find(user => user.username === "myai") !== undefined} />
-					: <div className='chat-alt'> Select a chat to start conversation</div>
+					currConvo ?
+						<Chats currConvo={currConvo} currUser={currUser} isAI={currConvo.users.find(user => user.username === "myai") !== undefined} socket={socket} />
+						: <div className='chat-alt'> Select a chat to start conversation</div>
 				}
 			</div>
 		</div>

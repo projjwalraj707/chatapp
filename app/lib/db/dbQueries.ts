@@ -86,7 +86,19 @@ export async function getConversations() {
 }
 
 export async function saveMsgToDB(draft: string, conversation_id: string) {
-	const authorId = (await extractPayLoad()).user_id;
+	const payLoad = await extractPayLoad();
+	const authorId = payLoad.user_id;
+
+	// Emit the message via socket before saving to DB
+	if ((global as any).io) {
+		(global as any).io.to(conversation_id).emit("receive_message", {
+			room: conversation_id,
+			content: draft,
+			author: payLoad.name,
+			authorusername: payLoad.username
+		});
+	}
+
 	const  query = {
 		text: "\
 		INSERT INTO messages (conversation_id, author, content)\
@@ -160,3 +172,6 @@ export async function findRecMsgs(username: string, duration: number) {
 	}
 	return (await client.query(query)).rows;
 }
+
+// console.log("Here is the result of testing findRecMsgs function for user 'projjwalraj' and duration of 24 hours:")
+// console.log((await findRecMsgs("projjwalraj", 24)))
