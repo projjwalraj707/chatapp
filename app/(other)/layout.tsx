@@ -1,4 +1,4 @@
-import Navbar from './Navbar.tsx';
+import Navbar from './Navbar';
 import "../globals.css";
 
 export default function RootLayout({
