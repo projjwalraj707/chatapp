@@ -19,7 +19,7 @@ const pool_context = process.env.DATABASE_URL
 
 const pool = new Pool(pool_context);
 
-pool.on('error', (err, client) => {
+pool.on('error', (err: any, client: any) => {
 	console.error("Unexpected error occured", err);
 	process.exit(-1);
 });

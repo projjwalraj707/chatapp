@@ -70,7 +70,7 @@ export async function getConversations() {
 		values: [currentUserID],
 	}
 	const res = await client.query(query);
-	const grouped = res.rows.reduce((acc: any, { conversation_id, convo_name, username, name, user_id }) => {
+	const grouped = res.rows.reduce((acc: any, { conversation_id, convo_name, username, name, user_id }: any) => {
 		if (!acc[conversation_id]) {
 			acc[conversation_id] = {
 				conversation_id,
