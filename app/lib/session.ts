@@ -3,7 +3,7 @@
 import jwt from "jsonwebtoken";
 import { cookies } from "next/headers";
 
-const SECRET_KEY = process.env.JWT_SECRET_KEY;
+const SECRET_KEY = process.env.JWT_SECRET_KEY as string;
 
 export async function createSession(username: string, user_id: string, name: string, email: string) {
 	const expiresAt = new Date(Date.now() + 7*24*60*60*1000); //expire a token in 7 days
@@ -28,6 +28,7 @@ export async function createSession(username: string, user_id: string, name: str
 export async function extractPayLoad() {
 	try {
 		const session = (await cookies()).get("session")?.value;
+		if (!session) return undefined;
 		const payload = jwt.verify(session, SECRET_KEY);
 		return payload;
 	}
@@ -37,11 +38,11 @@ export async function extractPayLoad() {
 }
 
 export async function findCurrUser() {
-	const payLoad = await extractPayLoad();
+	const payLoad: any = await extractPayLoad();
 	return {
-		username: payLoad.username,
-		name: payLoad.name,
-		user_id: payLoad.user_id,
+		username: payLoad?.username,
+		name: payLoad?.name,
+		user_id: payLoad?.user_id,
 	}
 }
 

@@ -9,7 +9,7 @@ export default async function Navbar() {
 		await deleteSession();
 		redirect("/login")
 	}
-	const payload = await extractPayLoad();
+	const payload: any = await extractPayLoad();
 
 	return (
 		<div className="nb-container bold">
