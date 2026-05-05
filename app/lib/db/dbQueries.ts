@@ -31,7 +31,7 @@ export async function usernameToName(username: string) {
 }
 
 export async function createGroup(friends: string[], chatName: string) {
-	const payLoad = await extractPayLoad();
+	const payLoad: any = await extractPayLoad();
 	const groupAdmin = payLoad?.username;
 	const query = {
 		text: "INSERT INTO conversations(convo_name) VALUES($1) RETURNING *",
@@ -87,7 +87,7 @@ export async function getConversations() {
 }
 
 export async function saveMsgToDB(draft: string, conversation_id: string) {
-	const payLoad = await extractPayLoad();
+	const payLoad: any = await extractPayLoad();
 	const authorId = payLoad?.user_id;
 
 	// Emit the message via socket before saving to DB
