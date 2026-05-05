@@ -26,5 +26,4 @@ pool.on("connect", () => {
 	console.error("Database connected to the app.")
 })
 
-const client = await pool.connect();
-export default client;
+export default pool;
