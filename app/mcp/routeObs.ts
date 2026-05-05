@@ -90,6 +90,6 @@ export async function GET(req: any) {
     return new Response("MCP Server is running707", { status: 200 });
 }
 
-export async function POST(req: Request, res: any) {
+export async function POST(req: any, res: any) {
     transport.handleRequest(req, res, req.body);
 }
