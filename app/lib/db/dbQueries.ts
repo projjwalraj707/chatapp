@@ -50,7 +50,8 @@ export async function createGroup(friends: string[], chatName: string) {
 }
 
 export async function getConversations() {
-	const currentUserID = (await extractPayLoad()).user_id;
+	const payLoad: any = await extractPayLoad();
+	const currentUserID = payLoad?.user_id;
 	const query = {
 		text: "\
 		WITH myConversations (conversation_id, convo_name)\
