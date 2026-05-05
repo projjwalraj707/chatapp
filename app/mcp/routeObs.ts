@@ -1,5 +1,5 @@
-import { McpServer } from "@modelcontextprotocol/sdk/server/mcp";
-import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp";
+import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import { z } from "zod";
 import { findRecMsgs } from "../lib/db/dbQueries";
 
@@ -86,10 +86,10 @@ export async function GET(request: Request, response: Response) {
 const transport = new StreamableHTTPServerTransport();
 mcpServer.connect(transport);
 
-export async function GET(req) {
+export async function GET(req: any) {
     return new Response("MCP Server is running707", { status: 200 });
 }
 
-export async function POST(req: Request, res) {
+export async function POST(req: Request, res: any) {
     transport.handleRequest(req, res, req.body);
 }
