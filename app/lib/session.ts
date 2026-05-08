@@ -28,12 +28,17 @@ export async function createSession(username: string, user_id: string, name: str
 export async function extractPayLoad() {
 	try {
 		const session = (await cookies()).get("session")?.value;
-		if (!session) return undefined;
+		if (!session) {
+			console.log("No session cookie found");
+			return undefined;
+		}
 		const payload = jwt.verify(session, SECRET_KEY);
+		console.log("Session payload extracted successfully for user:", (payload as any)?.username);
 		return payload;
 	}
 	catch (err) {
-		console.error("Failed to verify token!", err);
+		console.error("Failed to verify token:", err);
+		return undefined;
 	}
 }
 

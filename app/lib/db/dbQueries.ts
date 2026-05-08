@@ -13,12 +13,20 @@ export async function doesUsernameExist(username: String) {
 }
 
 export async function usernameToUserID(username: string) {
-	const query = {
-		text: "SELECT id FROM users WHERE username = $1",
-		values: [username]
+	try {
+		const query = {
+			text: "SELECT id FROM users WHERE username = $1",
+			values: [username]
+		}
+		const res = await client.query(query);
+		if (res.rows.length === 0) {
+			throw new Error(`User ${username} not found`);
+		}
+		return res.rows[0].id;
+	} catch (error) {
+		console.error(`Error getting user ID for ${username}:`, error);
+		throw error;
 	}
-	const res = await client.query(query);
-	return res.rows[0].id;
 }
 
 export async function usernameToName(username: string) {
@@ -31,21 +39,31 @@ export async function usernameToName(username: string) {
 }
 
 export async function createGroup(friends: string[], chatName: string) {
-	const payLoad: any = await extractPayLoad();
-	const groupAdmin = payLoad?.username;
-	const query = {
-		text: "INSERT INTO conversations(convo_name) VALUES($1) RETURNING *",
-		values: [friends.length > 1 ? chatName : "Private Chat"]
-	}
-	const res = await client.query(query);
-	const conversation_id = res.rows[0].id;
-	for (const member of [...friends, groupAdmin]) {
-		const memberId = await usernameToUserID(member);
-		const query2 = {
-			text: "INSERT INTO conversation_members (conversation_id, user_id) VALUES ($1, $2)",
-			values: [conversation_id, memberId]
+	try {
+		const payLoad: any = await extractPayLoad();
+		if (!payLoad?.username) {
+			throw new Error("User not authenticated");
 		}
-		await client.query(query2);
+		const groupAdmin = payLoad.username;
+		const query = {
+			text: "INSERT INTO conversations(convo_name) VALUES($1) RETURNING *",
+			values: [friends.length > 1 ? chatName : "Private Chat"]
+		}
+		const res = await client.query(query);
+		const conversation_id = res.rows[0].id;
+
+		for (const member of [...friends, groupAdmin]) {
+			const memberId = await usernameToUserID(member);
+			const query2 = {
+				text: "INSERT INTO conversation_members (conversation_id, user_id) VALUES ($1, $2)",
+				values: [conversation_id, memberId]
+			}
+			await client.query(query2);
+		}
+		console.log(`Successfully created group chat with ID: ${conversation_id}`);
+	} catch (error) {
+		console.error("Error creating group:", error);
+		throw new Error("Failed to create group chat. Please try again.");
 	}
 }
 

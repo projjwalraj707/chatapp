@@ -33,9 +33,15 @@ export default function NewChatComponent() {
 			setIsPending(false);
 			return;
 		}
-		await createGroup(usernames, usernames.length > 1 ? chatName : "");
-		setIsPending(false);
-		router.back();
+		try {
+			await createGroup(usernames, usernames.length > 1 ? chatName : "");
+			setIsPending(false);
+			router.back();
+		} catch (error) {
+			console.error("Error creating group:", error);
+			setErrors(prev => ({...prev, username: "Failed to create group. Please try again."}));
+			setIsPending(false);
+		}
 	}
 	async function handleKeyDown(e) {
 		if (e.key === "Enter") {
