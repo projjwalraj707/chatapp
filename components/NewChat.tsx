@@ -1,7 +1,7 @@
 'use client'
 import { useState } from "react"
 import { createGroup, doesUsernameExist } from "../app/lib/db/dbQueries";
-import { extractPayLoad } from "../app/lib/session";
+import { usePayload } from "../app/lib/PayloadContext";
 import { useRouter } from "next/navigation";
 
 export default function NewChatComponent() {
@@ -11,6 +11,7 @@ export default function NewChatComponent() {
 	const [errors, setErrors] = useState<{username?: string, chatName?: string}>();
 	const router = useRouter();
 	const [isPending, setIsPending] = useState(false);
+	const payload = usePayload();
 
 	function handleUsernameChange(e) {
 		const val = e.target.value;
@@ -42,7 +43,7 @@ export default function NewChatComponent() {
 			const currentUsername = username.trim();
 			if (!currentUsername.length) return;
 			setErrors(prev => ({...prev, username: ""}))
-			if ((await extractPayLoad()).username === currentUsername) {
+			if (payload?.username === currentUsername) {
 				setErrors(prev => ({...prev, username: "can't add yourself"}))
 				return;
 			}

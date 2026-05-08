@@ -4,7 +4,7 @@ import Chats from './Chats';
 import './chat-screen.css'
 import { useEffect, useState } from 'react';
 import { getConversations, usernameToName } from '../lib/db/dbQueries';
-import { findCurrUser } from '../lib/session';
+import { usePayload } from '../lib/PayloadContext';
 import { io, Socket } from 'socket.io-client';
 
 let socket: Socket;
@@ -24,11 +24,15 @@ type conversationType = {
 export default function ChatScreen() {
 	const [conversations, setConversations] = useState<conversationType[]>([]);
 	const [currConvo, setCurrConvo] = useState<conversationType | null>(null);
-	const [currUser, setCurrUser] = useState<userType | null>(null)
+	const payload = usePayload();
+	const currUser = payload ? {
+		username: payload.username,
+		name: payload.name,
+		user_id: payload.user_id
+	} : null;
 
 	useEffect(() => {
 		getConversations().then(res => setConversations(res as any));
-		findCurrUser().then(res => setCurrUser(res as any));
 
 		socket = io();
 		return () => {
