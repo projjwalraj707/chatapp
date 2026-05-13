@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import Navbar from './Navbar';
 import "../globals.css";
 import { PayloadProvider } from '../lib/PayloadContext';
