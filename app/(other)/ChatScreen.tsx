@@ -40,16 +40,16 @@ export default function ChatScreen() {
 		// }
 	}, [])
 
-	useEffect(() => {
-		if (currConvo && socket) {
-			socket.emit("join_room", currUser?.username, currConvo.conversation_id);
-		}
-		return () => {
-			if (currConvo && socket && currUser) {
-				socket.emit("leave_room", currUser.username, currConvo.conversation_id);
-			}
-		}
-	}, [currConvo])
+	// useEffect(() => {
+	// 	if (currConvo && socket) {
+	// 		socket.emit("join_room", currUser?.username, currConvo.conversation_id);
+	// 	}
+	// 	return () => {
+	// 		if (currConvo && socket && currUser) {
+	// 			socket.emit("leave_room", currUser.username, currConvo.conversation_id);
+	// 		}
+	// 	}
+	// }, [currConvo])
 
 	return (
 		<div className="cs-container">
