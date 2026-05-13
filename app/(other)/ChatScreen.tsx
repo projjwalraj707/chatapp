@@ -34,10 +34,10 @@ export default function ChatScreen() {
 	useEffect(() => {
 		getConversations().then(res => setConversations(res as any));
 
-		socket = io();
-		return () => {
-			if (socket) socket.disconnect();
-		}
+		// socket = io();
+		// return () => {
+		// 	if (socket) socket.disconnect();
+		// }
 	}, [])
 
 	useEffect(() => {
