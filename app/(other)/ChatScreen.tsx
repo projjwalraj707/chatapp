@@ -32,7 +32,18 @@ export default function ChatScreen() {
 	} : null;
 
 	useEffect(() => {
-		getConversations().then(res => setConversations(res as any));
+		const loadConversations = async () => {
+			try {
+				const res: conversationType[] = await getConversations();
+				setConversations(res);
+			} catch (error) {
+				console.error("Error loading conversations:", error);
+			}
+		}
+		loadConversations();
+		// getConversations().then(res => setConversations(res as any));
+		// const res: conversationType[] = await getConversations();
+		// setConversations(res);
 
 		// socket = io();
 		// return () => {

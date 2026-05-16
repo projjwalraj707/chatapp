@@ -11,7 +11,7 @@ console.log("JWT_SECRET_KEY:", process.env.JWT_SECRET_KEY ? "SET" : "NOT SET");
 const pool_context = process.env.DATABASE_URL
 	? {
 		connectionString: process.env.DATABASE_URL,
-		ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
+		ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : true
 	}
 	: {
 		user: process.env.DB_USERNAME,
@@ -44,4 +44,7 @@ pool.query('SELECT NOW()', (err, res) => {
 	}
 });
 
+// const client = await pool.connect();
+
+// export default client;
 export default pool;

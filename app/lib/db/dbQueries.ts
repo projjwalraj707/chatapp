@@ -1,13 +1,13 @@
 "use server"
 import { extractPayLoad } from "../session";
-import client from "./pgsql"
+import pool from "./pgsql"
 
 export async function doesUsernameExist(username: String) {
 	const query = {
 		text: 'SELECT COUNT(*) from users where username = $1',
 		values: [username]
 	}
-	const res = await client.query(query);
+	const res = await pool.query(query);
 	if (res.rows[0].count == 0) return 0;
 	return 1;
 }
@@ -18,7 +18,7 @@ export async function usernameToUserID(username: string) {
 			text: "SELECT id FROM users WHERE username = $1",
 			values: [username]
 		}
-		const res = await client.query(query);
+		const res = await pool.query(query);
 		if (res.rows.length === 0) {
 			throw new Error(`User ${username} not found`);
 		}
@@ -34,7 +34,7 @@ export async function usernameToName(username: string) {
 		text: "SELECT name FROM users WHERE username = $1",
 		values: [username]
 	}
-	const res = await client.query(query);
+	const res = await pool.query(query);
 	return res.rows[0].name;
 }
 
@@ -49,7 +49,7 @@ export async function createGroup(friends: string[], chatName: string) {
 			text: "INSERT INTO conversations(convo_name) VALUES($1) RETURNING *",
 			values: [friends.length > 1 ? chatName : "Private Chat"]
 		}
-		const res = await client.query(query);
+		const res = await pool.query(query);
 		const conversation_id = res.rows[0].id;
 
 		for (const member of [...friends, groupAdmin]) {
@@ -58,7 +58,7 @@ export async function createGroup(friends: string[], chatName: string) {
 				text: "INSERT INTO conversation_members (conversation_id, user_id) VALUES ($1, $2)",
 				values: [conversation_id, memberId]
 			}
-			await client.query(query2);
+			await pool.query(query2);
 		}
 		console.log(`Successfully created group chat with ID: ${conversation_id}`);
 	} catch (error) {
@@ -89,7 +89,7 @@ export async function getConversations() {
 		",
 		values: [currentUserID],
 	}
-	const res = await client.query(query);
+	const res = await pool.query(query);
 	const grouped = res.rows.reduce((acc: any, { conversation_id, convo_name, username, name, user_id }: any) => {
 		if (!acc[conversation_id]) {
 			acc[conversation_id] = {
@@ -102,6 +102,7 @@ export async function getConversations() {
 		return acc;
 	}, {} as Record<string, { conversation_id: string, convo_name: string, users: { username: string, name: string, user_id: string }[] }>);
 	const ans = Object.values(grouped);
+	console.log("Fetched conversations for user ID", currentUserID, ":", ans);
 	return ans;
 }
 
@@ -126,7 +127,7 @@ export async function saveMsgToDB(draft: string, conversation_id: string) {
 		",
 		values: [conversation_id, authorId, draft]
 	}
-	await client.query(query);
+	await pool.query(query);
 }
 
 export async function saveAIMsgToDB(draft: string, conversation_id: string) {
@@ -138,7 +139,7 @@ export async function saveAIMsgToDB(draft: string, conversation_id: string) {
 		",
 		values: [conversation_id, aiID, draft]
 	}
-	await client.query(query);
+	await pool.query(query);
 }
 
 export async function fetchMessages(conversation_id: string) {
@@ -156,7 +157,7 @@ export async function fetchMessages(conversation_id: string) {
 		",
 		values: [conversation_id]
 	}
-	const res = await client.query(query)
+	const res = await pool.query(query)
 	return res.rows;
 }
 
@@ -190,7 +191,7 @@ export async function findRecMsgs(username: string, duration: number) {
 		",
 		values: [username, duration]
 	}
-	return (await client.query(query)).rows;
+	return (await pool.query(query)).rows;
 }
 
 // console.log("Here is the result of testing findRecMsgs function for user 'projjwalraj' and duration of 24 hours:")
