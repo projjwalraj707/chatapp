@@ -3,7 +3,6 @@ import Link from 'next/link';
 import Chats from './Chats';
 import './chat-screen.css'
 import { useEffect, useState } from 'react';
-import { getConversations, usernameToName } from '../lib/db/dbQueries';
 import { usePayload } from '../lib/PayloadContext';
 import { io, Socket } from 'socket.io-client';
 
@@ -32,19 +31,20 @@ export default function ChatScreen() {
 	} : null;
 
 	useEffect(() => {
-		const loadConversations = async () => {
+		async function loadConversations() {
 			try {
-				const res: conversationType[] = await getConversations();
-				setConversations(res);
+				const res = await fetch('/api/conversations');
+				if (!res.ok) {
+					throw new Error('Failed to load conversations');
+				}
+				const data = await res.json();
+				setConversations(data as conversationType[]);
 			} catch (error) {
-				console.error("Error loading conversations:", error);
+				console.error(error);
 			}
 		}
-		loadConversations();
-		// getConversations().then(res => setConversations(res as any));
-		// const res: conversationType[] = await getConversations();
-		// setConversations(res);
 
+		loadConversations();
 		// socket = io();
 		// return () => {
 		// 	if (socket) socket.disconnect();
