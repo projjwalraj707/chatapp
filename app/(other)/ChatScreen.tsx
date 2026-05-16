@@ -72,7 +72,7 @@ export default function ChatScreen() {
 							<img src='/new-chat.png' width='55px' height='60px' alt='create new chat' />
 						</Link>
 					</li>
-					{conversations.sort((a, b) => {
+					{[...conversations].sort((a, b) => {
 						if (a.users.find(user => user.username === "myai") !== undefined) return -1;
 						return 1;
 					}).map(conversation =>
